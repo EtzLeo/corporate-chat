@@ -4,13 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResponseDto {
-    private long id;
+public class MessageRequestDto {
+    private Long authorID;
 
-    private String name;
+    private Long roomID;
 
-    private String password;
+    private LocalDateTime deliveringTime;
+
+    private String text;
 }

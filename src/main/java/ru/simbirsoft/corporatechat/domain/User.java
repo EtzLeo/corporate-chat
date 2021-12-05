@@ -16,7 +16,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String name;
 
@@ -27,11 +27,4 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     Set<UserRoom> userRooms;
-
-//    @ManyToMany(fetch=FetchType.EAGER)
-//    @JoinTable(name="user_room",
-//            joinColumns = @JoinColumn(name="user_id"),
-//            inverseJoinColumns = @JoinColumn(name="room_id")
-//    )
-//    private Set<Room> rooms;
 }

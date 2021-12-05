@@ -18,12 +18,10 @@ public class Message {
     private Long id;
 
     @ManyToOne
-//            (fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User author;
 
     @ManyToOne
-//            (fetch = FetchType.EAGER)
     @JoinColumn(name = "room_id")
     private Room room;
 

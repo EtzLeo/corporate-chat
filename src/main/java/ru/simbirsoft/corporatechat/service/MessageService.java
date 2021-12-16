@@ -8,5 +8,5 @@ public interface MessageService {
     MessageResponseDto findById(Long id);
     MessageResponseDto editMessage(Long id, MessageRequestDto messageRequestDto);
     MessageResponseDto createMessage(MessageRequestDto messageRequestDto);
-    boolean deleteMessageById(Long id);
+    void deleteMessageById(Long id);
 }

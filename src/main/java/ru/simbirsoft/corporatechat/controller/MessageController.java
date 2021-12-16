@@ -37,10 +37,9 @@ public class MessageController {
     }
 
     @DeleteMapping
-    public boolean deleteMessage(@RequestParam Long id) {
+    public void deleteMessage(@RequestParam Long id) {
         if (id != null) {
-            return messageService.deleteMessageById(id);
+            messageService.deleteMessageById(id);
         }
-        return false;
     }
 }

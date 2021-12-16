@@ -3,8 +3,9 @@ package ru.simbirsoft.corporatechat.domain.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.simbirsoft.corporatechat.domain.User;
 import ru.simbirsoft.corporatechat.domain.enums.RoomType;
+
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -12,7 +13,10 @@ import ru.simbirsoft.corporatechat.domain.enums.RoomType;
 public class RoomRequestDto {
     private String name;
 
-    private User owner;
+    private long ownerId;
 
     private RoomType type;
+
+//    private Set<Long> users;
+
 }

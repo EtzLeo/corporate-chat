@@ -38,10 +38,9 @@ public class UserController {
     }
 
     @DeleteMapping
-    public boolean deleteUser(@RequestParam Long id) {
+    public void deleteUser(@RequestParam Long id) {
         if (id!=null) {
-            return userService.deleteUserById(id);
+            userService.deleteUserById(id);
         }
-        return false;
     }
 }

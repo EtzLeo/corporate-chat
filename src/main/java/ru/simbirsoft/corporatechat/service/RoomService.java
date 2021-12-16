@@ -8,5 +8,5 @@ public interface RoomService {
     RoomResponseDto findById(Long id);
     RoomResponseDto editRoom(Long id, RoomRequestDto roomRequestDto);
     RoomResponseDto createRoom(RoomRequestDto roomRequestDto);
-    boolean deleteRoomById(Long id);
+    void deleteRoomById(Long id);
 }

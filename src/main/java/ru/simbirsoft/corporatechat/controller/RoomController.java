@@ -38,10 +38,9 @@ public class RoomController {
     }
 
     @DeleteMapping
-    public boolean deleteRoom(@RequestParam Long id) {
+    public void deleteRoom(@RequestParam Long id) {
         if (id!=null) {
-            return roomService.deleteRoomById(id);
+            roomService.deleteRoomById(id);
         }
-        return false;
     }
 }

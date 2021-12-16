@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 public class MessageResponseDto {
     private Long id;
 
-    private Long authorID;
+    private Long authorId;
 
-    private Long roomID;
+    private Long roomId;
 
     private LocalDateTime deliveringTime;
 

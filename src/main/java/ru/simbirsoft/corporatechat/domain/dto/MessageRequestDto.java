@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MessageRequestDto {
-    private Long authorID;
+    private Long authorId;
 
-    private Long roomID;
+    private Long roomId;
 
     private LocalDateTime deliveringTime;
 

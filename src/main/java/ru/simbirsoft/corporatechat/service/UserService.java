@@ -8,5 +8,5 @@ public interface UserService {
     UserResponseDto findById(Long id);
     UserResponseDto editUser(Long id, UserRequestDto userRequestDto);
     UserResponseDto createUser(UserRequestDto userRequestDto);
-    boolean deleteUserById(Long id);
+    void deleteUserById(Long id);
 }

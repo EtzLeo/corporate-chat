@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.simbirsoft.corporatechat.domain.Room;
 import ru.simbirsoft.corporatechat.domain.dto.RoomRequestDto;
 import ru.simbirsoft.corporatechat.domain.dto.RoomResponseDto;
-import ru.simbirsoft.corporatechat.exception.RoomNotFoundException;
+import ru.simbirsoft.corporatechat.exception.ResourceNotFoundException;
 import ru.simbirsoft.corporatechat.mapper.RoomMapper;
 import ru.simbirsoft.corporatechat.repository.RoomRepository;
 import ru.simbirsoft.corporatechat.service.RoomService;
@@ -24,7 +24,7 @@ public class RoomServiceImpl implements RoomService {
         return roomRepository
                 .findById(id)
                 .map(mapper::roomToRoomResponseDto)
-                .orElseThrow(() -> new RoomNotFoundException("room not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("room not found: " + id));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class RoomServiceImpl implements RoomService {
             roomRepository.save(room);
             return mapper.roomToRoomResponseDto(room);
         }
-        throw new RoomNotFoundException("room not found: " + id);
+        throw new ResourceNotFoundException("room not found: " + id);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class RoomServiceImpl implements RoomService {
         Room room = roomRepository
                 .findById(id)
                 .orElseThrow(
-                        () -> new RoomNotFoundException("room not found: " + id));
+                        () -> new ResourceNotFoundException("room not found: " + id));
 
         roomRepository.delete(room);
     }

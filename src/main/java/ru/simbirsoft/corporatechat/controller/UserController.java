@@ -1,14 +1,20 @@
 package ru.simbirsoft.corporatechat.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.simbirsoft.corporatechat.domain.dto.UserRequestDto;
 import ru.simbirsoft.corporatechat.domain.dto.UserResponseDto;
 import ru.simbirsoft.corporatechat.service.UserService;
 
+import javax.validation.Valid;
+import java.util.logging.Level;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
+@Log
 public class UserController {
 
     public final UserService userService;
@@ -21,12 +27,9 @@ public class UserController {
         return null;
     }
 
-    @PostMapping
-    public UserResponseDto createUser(@RequestBody UserRequestDto userRequestDto) {
-        if (userRequestDto!=null) {
-            return userService.createUser(userRequestDto);
-        }
-        return null;
+    @PostMapping("/registration")
+    public UserResponseDto createUser(@RequestBody @Valid UserRequestDto userRequestDto) {
+        return userService.register(userRequestDto);
     }
 
     @PatchMapping

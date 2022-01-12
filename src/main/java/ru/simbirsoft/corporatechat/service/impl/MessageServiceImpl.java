@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.simbirsoft.corporatechat.domain.Message;
 import ru.simbirsoft.corporatechat.domain.dto.MessageRequestDto;
 import ru.simbirsoft.corporatechat.domain.dto.MessageResponseDto;
-import ru.simbirsoft.corporatechat.exception.MessageNotFoundException;
+import ru.simbirsoft.corporatechat.exception.ResourceNotFoundException;
 import ru.simbirsoft.corporatechat.mapper.MessageMapper;
 import ru.simbirsoft.corporatechat.repository.MessageRepository;
 import ru.simbirsoft.corporatechat.service.MessageService;
@@ -24,7 +24,7 @@ public class MessageServiceImpl implements MessageService {
         return messageRepository
                 .findById(id)
                 .map(mapper::messageToMessageResponseDto)
-                .orElseThrow(() -> new MessageNotFoundException("message not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("message not found: " + id));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class MessageServiceImpl implements MessageService {
             messageRepository.save(message);
             return mapper.messageToMessageResponseDto(message);
         }
-        throw new MessageNotFoundException("message not found: " + id);
+        throw new ResourceNotFoundException("message not found: " + id);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class MessageServiceImpl implements MessageService {
         Message message = messageRepository
                 .findById(id)
                 .orElseThrow(
-                        () -> new MessageNotFoundException("message not found: " + id));
+                        () -> new ResourceNotFoundException("message not found: " + id));
 
         messageRepository.delete(message);
     }

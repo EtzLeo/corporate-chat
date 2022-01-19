@@ -5,18 +5,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.simbirsoft.corporatechat.domain.enums.RoomType;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoomRequestDto {
+    @NotNull
     private String name;
 
+    @NotNull
     private long ownerId;
 
     private RoomType type;
 
-//    private Set<Long> users;
+    @NotEmpty
+    private Set<Long> users;
 
 }

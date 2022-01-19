@@ -4,16 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRequestDto {
+    @NotNull
     private String name;
 
+    @NotNull
     private String password;
 
-//    private Set<Long> rooms;
+    @NotEmpty
+    private Set<Long> rooms;
 
 }

@@ -28,12 +28,16 @@ public class Room {
     @Enumerated(EnumType.STRING)
     private RoomType type;
 
-//    @ManyToMany(mappedBy = "rooms")
-//    private Set<User> users;
+    @ManyToMany(mappedBy = "rooms")
+    private Set<User> users;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
     private Set<Message> messages;
 
     @OneToMany(mappedBy = "room")
-    Set<UserRoom> userRooms;
+    private Set<UserRoom> userRooms;
+
+    public Room(Long id) {
+        this.id = id;
+    }
 }

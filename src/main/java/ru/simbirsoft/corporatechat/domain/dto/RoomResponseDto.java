@@ -19,5 +19,5 @@ public class RoomResponseDto {
 
     private RoomType type;
 
-//    private Set<Long> users;
+    private Set<Long> users;
 }

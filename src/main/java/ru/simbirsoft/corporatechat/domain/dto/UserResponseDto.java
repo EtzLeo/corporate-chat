@@ -16,5 +16,5 @@ public class UserResponseDto {
 
     private String password;
 
-//    private Set<Long> rooms;
+    private Set<Long> rooms;
 }

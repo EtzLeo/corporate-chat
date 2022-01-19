@@ -25,6 +25,16 @@ public class User {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private Set<Message> messages;
 
-    @OneToMany(mappedBy = "user")
-    Set<UserRoom> userRooms;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private Set<UserRoom> userRooms;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_room",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns= @JoinColumn(name = "room_id"))
+    private Set<Room> rooms;
+
+    public User(Long id) {
+        this.id = id;
+    }
 }

@@ -3,9 +3,12 @@ package ru.simbirsoft.corporatechat.config.jwt;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.simbirsoft.corporatechat.domain.enums.Role;
 
 import java.util.Collection;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class JwtUser implements UserDetails {
@@ -16,17 +19,25 @@ public class JwtUser implements UserDetails {
 
     private final String password;
 
-    private final Collection<? extends GrantedAuthority> authorities;
+    private final Long roomId;
 
+    private final Role role;
+
+    private final boolean block;
 
     @JsonIgnore
     public Long getId() {
         return id;
     }
 
+    @JsonIgnore
+    public Long getRoomId() {
+        return roomId;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @JsonIgnore
@@ -49,7 +60,7 @@ public class JwtUser implements UserDetails {
     @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !block;
     }
 
     @JsonIgnore

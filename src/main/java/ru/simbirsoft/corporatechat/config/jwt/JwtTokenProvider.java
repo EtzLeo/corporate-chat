@@ -1,14 +1,12 @@
 package ru.simbirsoft.corporatechat.config.jwt;
 
 import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import ru.simbirsoft.corporatechat.domain.enums.Role;
@@ -29,16 +27,15 @@ public class JwtTokenProvider {
     @Value("${jwt.token.expired}")
     private long validityInMilliseconds;
 
-    private UserDetailsService userDetailsService;
+    private final JwtUserDetailsService userDetailsService;
 
-    public JwtTokenProvider(@Qualifier("jwtUserDetailsService") UserDetailsService userDetailsService) {
+    public JwtTokenProvider(JwtUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        return bCryptPasswordEncoder;
+        return new BCryptPasswordEncoder();
     }
 
     @PostConstruct
@@ -46,9 +43,10 @@ public class JwtTokenProvider {
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
     }
 
-    public String createToken(String username, List<Role> roles) {
+    public String createToken(String username, List<Role> roles, Long roomId) {
 
         Claims claims = Jwts.claims().setSubject(username);
+        claims.put("roomId", roomId);
         claims.put("roles", getRoleNames(roles));
 
         Date now = new Date();
@@ -63,12 +61,16 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
+        UserDetails userDetails = this.userDetailsService.loadUserByUsernameAndRoomId(getUsername(token), getRoomId(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
     public String getUsername(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public Long getRoomId(String token) {
+        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("roomId", Long.class);
     }
 
     public String resolveToken(HttpServletRequest req) {

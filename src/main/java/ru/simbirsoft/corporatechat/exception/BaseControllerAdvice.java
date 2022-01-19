@@ -17,7 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BaseControllerAdvice {
 
-    private final DateTimeFormatter dateTimeFormatter;
+    private DateTimeFormatter dateTimeFormatter;
 
     @ExceptionHandler(PersistenceLayerException.class)
     public Object persistenceException(PersistenceLayerException ex) {
@@ -31,7 +31,12 @@ public class BaseControllerAdvice {
 
     @ExceptionHandler(IllegalDataException.class)
     public Object illegalDataException(IllegalDataException ex) {
-        return response(HttpStatus.INTERNAL_SERVER_ERROR, ex);
+        return response(HttpStatus.BAD_REQUEST, ex);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public Object accessDeniedException(AccessDeniedException ex) {
+        return response(HttpStatus.FORBIDDEN, ex);
     }
 
     private Object response(HttpStatus status, AbstractException ex) {

@@ -10,6 +10,7 @@ import ru.simbirsoft.corporatechat.mapper.MessageMapper;
 import ru.simbirsoft.corporatechat.repository.MessageRepository;
 import ru.simbirsoft.corporatechat.service.MessageService;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -24,7 +25,7 @@ public class MessageServiceImpl implements MessageService {
         return messageRepository
                 .findById(id)
                 .map(mapper::messageToMessageResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("message not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Message not found"));
     }
 
     @Override
@@ -36,12 +37,14 @@ public class MessageServiceImpl implements MessageService {
             messageRepository.save(message);
             return mapper.messageToMessageResponseDto(message);
         }
-        throw new ResourceNotFoundException("message not found: " + id);
+        throw new ResourceNotFoundException("Message not found");
     }
 
     @Override
     public MessageResponseDto createMessage(MessageRequestDto messageRequestDto) {
-        Message message = messageRepository.save(mapper.messageRequestDtoToMessage(messageRequestDto));
+        Message message = mapper.messageRequestDtoToMessage(messageRequestDto);
+        message.setDeliveringTime(LocalDateTime.now());
+        messageRepository.save(message);
         return mapper.messageToMessageResponseDto(message);
     }
 
@@ -50,7 +53,7 @@ public class MessageServiceImpl implements MessageService {
         Message message = messageRepository
                 .findById(id)
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("message not found: " + id));
+                        () -> new ResourceNotFoundException("Message not found"));
 
         messageRepository.delete(message);
     }

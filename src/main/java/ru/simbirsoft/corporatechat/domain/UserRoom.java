@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Proxy;
 import ru.simbirsoft.corporatechat.domain.enums.Role;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Proxy(lazy=false)
 @Entity
 @Table(name = "user_room")
 @Getter
@@ -18,24 +20,22 @@ import java.time.LocalDateTime;
 public class UserRoom {
 
     @EmbeddedId
-    UserRoomFK id;
+    private UserRoomFK id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("userId")
-    @JoinColumn(name = "user_id")
-    User user;
+    private User user;
 
-    @ManyToOne
     @MapsId("roomId")
-    @JoinColumn(name = "room_id")
-    Room room;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Room room;
 
     @Enumerated(EnumType.STRING)
-    Role role;
+    private Role role;
 
-    boolean isBlocked;
+    private boolean blocked;
 
-    LocalDateTime startBlocking;
+    private LocalDateTime startBlocking;
 
-    int blockingDuration;
+    private int blockingDuration;
 }

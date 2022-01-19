@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
+@Proxy(lazy=false)
 @Embeddable
 @Getter
 @Setter
@@ -17,8 +19,9 @@ import java.io.Serializable;
 public class UserRoomFK implements Serializable {
 
     @Column(name = "user_id")
-    long userId;
+    Long userId;
 
     @Column(name = "room_id")
-    long roomId;
+    Long roomId;
+
 }

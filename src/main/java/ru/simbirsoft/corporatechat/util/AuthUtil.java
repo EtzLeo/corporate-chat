@@ -8,11 +8,11 @@ import java.util.Objects;
 
 public class AuthUtil {
 
-    public static JwtUser getCurrentUser() { //TODO auth util
+    public static JwtUser getCurrentUser() {
         return (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    public static boolean resolveUser(String username) { //TODO auth util
+    public static boolean resolveUser(String username) {
         JwtUser jwtUser = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return Objects.equals(jwtUser.getUsername(), username);
     }

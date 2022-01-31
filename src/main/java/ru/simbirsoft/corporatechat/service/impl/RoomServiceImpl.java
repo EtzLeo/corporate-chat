@@ -2,6 +2,7 @@ package ru.simbirsoft.corporatechat.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.simbirsoft.corporatechat.domain.Room;
@@ -39,6 +40,15 @@ public class RoomServiceImpl implements RoomService {
 
     @Transactional
     @Override
+    public RoomResponseDto findByName(String name) {
+        return roomRepository
+                .findByName(name)
+                .map(mapper::roomToRoomResponseDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
+    }
+
+    @Transactional
+    @Override
     public RoomResponseDto renameRoom(Long id, String name) {
         Room room = roomRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Room not found"));
         if(!Objects.equals(AuthUtil.getCurrentUser().getUsername(),room.getOwner().getName())) {
@@ -52,6 +62,7 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     @Override
     public RoomResponseDto createRoom(RoomRequestDto roomRequestDto) {
+        roomRequestDto.setOwnerId(AuthUtil.getCurrentUser().getId());
         Room room = mapper.roomRequestDtoToRoom(roomRequestDto);
         final int[] usersCount = {roomRequestDto.getUsers().size()};
 
@@ -73,9 +84,9 @@ public class RoomServiceImpl implements RoomService {
         roomRepository.save(room);
 
         for (Long id : roomRequestDto.getUsers()) {
-            userRoomService.register(new UserRoomFK(id, room.getId()), Role.ROLE_USER);
+            userRoomService.registerUser(new UserRoomFK(id, room.getId()), Role.ROLE_USER);
         }
-        userRoomService.register(new UserRoomFK(AuthUtil.getCurrentUser().getId(), room.getId()), Role.ROLE_ADMIN);
+        userRoomService.registerUser(new UserRoomFK(AuthUtil.getCurrentUser().getId(), room.getId()), Role.ROLE_ADMIN);
 
         return mapper.roomToRoomResponseDto(room);
     }
@@ -86,7 +97,6 @@ public class RoomServiceImpl implements RoomService {
         Room room = roomRepository.save(mapper.roomRequestDtoToRoom(roomRequestDto));
         return mapper.roomToRoomResponseDto(room);
     }
-
 
     @Transactional
     @Override

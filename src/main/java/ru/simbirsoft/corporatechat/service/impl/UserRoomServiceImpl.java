@@ -129,7 +129,7 @@ public class UserRoomServiceImpl implements UserRoomService {
 
     @Transactional
     @Override
-    public UserRoomResponseDto add(UserRoomFK id) {
+    public UserRoomResponseDto addUser(UserRoomFK id) {
         if (isBlocked()) {
             throw new AccessDeniedException("Blocked user cannot add user to the room");
         }
@@ -171,7 +171,7 @@ public class UserRoomServiceImpl implements UserRoomService {
 
     @Transactional
     @Override
-    public UserRoomResponseDto register(UserRoomFK id, Role role) {
+    public UserRoomResponseDto registerUser(UserRoomFK id, Role role) {
         Long userId = id.getUserId();
         Long roomId = id.getRoomId();
 
@@ -194,17 +194,13 @@ public class UserRoomServiceImpl implements UserRoomService {
 
     @Transactional
     @Override
-    public UserRoomResponseDto expel(UserRoomFK id) {
+    public UserRoomResponseDto expelUser(UserRoomFK id) {
         if (isBlocked()) {
             throw new AccessDeniedException("You are blocked");
         }
 
         UserRoom userRoom = userRoomRepository.findById(new UserRoomFK(id.getUserId(),id.getRoomId()))
                 .orElseThrow(() -> new ResourceNotFoundException("Not found user in room"));
-
-        if(AuthUtil.getCurrentUser().getUsername().equals(userRoom.getUser().getName())) {
-            throw new AccessDeniedException("You can't expel yourself");
-        }
 
         if(Objects.equals(userRoom.getRoom().getOwner().getName(), userRoom.getUser().getName())) {
             throw new AccessDeniedException("You can't expel owner of the room");
@@ -214,6 +210,18 @@ public class UserRoomServiceImpl implements UserRoomService {
             userRoom.getRoom().setType(RoomType.PRIVATE);
         }
 
+        userRoomRepository.delete(userRoom);
+        return mapper.userRoomToUserRoomResponseDto(userRoom);
+    }
+
+    @Transactional
+    @Override
+    public UserRoomResponseDto exitRoom(Long roomId) {
+        UserRoom userRoom = userRoomRepository.findById(new UserRoomFK(AuthUtil.getCurrentUser().getId(),roomId))
+                .orElseThrow(() -> new ResourceNotFoundException("Not found user in room"));
+        if(Objects.equals(userRoom.getRoom().getOwner().getId(), userRoom.getUser().getId())) {
+            throw new AccessDeniedException("Owner cannot leave the room");
+        }
         userRoomRepository.delete(userRoom);
         return mapper.userRoomToUserRoomResponseDto(userRoom);
     }

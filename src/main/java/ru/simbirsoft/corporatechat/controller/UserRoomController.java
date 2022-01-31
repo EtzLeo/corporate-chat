@@ -1,5 +1,6 @@
 package ru.simbirsoft.corporatechat.controller;
 
+import com.sun.istack.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -45,14 +46,16 @@ public class UserRoomController {
     @PostMapping
     UserRoomResponseDto addUser(@PathVariable Long roomId,
                                 @RequestParam @NotNull Long userId) {
-        return userRoomService.add(new UserRoomFK(userId, roomId));
+        return userRoomService.addUser(new UserRoomFK(userId, roomId));
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping
-    UserRoomResponseDto expelUser(@PathVariable Long roomId,
-                                  @RequestParam @NotNull Long userId) {
-        return userRoomService.expel(new UserRoomFK(userId, roomId));
+    UserRoomResponseDto exitRoom(@PathVariable Long roomId,
+                                  @RequestParam @Nullable Long userId) {
+        if(userId == null) {
+            return userRoomService.exitRoom(roomId);
+        }
+        return userRoomService.expelUser(new UserRoomFK(userId, roomId));
     }
 
 }

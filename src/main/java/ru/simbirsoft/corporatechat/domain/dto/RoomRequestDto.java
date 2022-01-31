@@ -15,8 +15,7 @@ import java.util.Set;
 public class RoomRequestDto {
     @NotNull
     private String name;
-
-    @NotNull
+    
     private long ownerId;
 
     private RoomType type;

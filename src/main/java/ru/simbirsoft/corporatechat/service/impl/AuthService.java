@@ -77,7 +77,7 @@ public class AuthService {
         RoomResponseDto room = roomService.createRoomOnRegistration(
                 new RoomRequestDto("bot-room", botId, RoomType.PRIVATE, Set.of(user.getId()))
         );
-        userRoomService.register(new UserRoomFK(botId, room.getId()), Role.ROLE_ADMIN);
-        userRoomService.register(new UserRoomFK(user.getId(), room.getId()), Role.ROLE_USER);
+        userRoomService.registerUser(new UserRoomFK(botId, room.getId()), Role.ROLE_ADMIN);
+        userRoomService.registerUser(new UserRoomFK(user.getId(), room.getId()), Role.ROLE_USER);
     }
 }

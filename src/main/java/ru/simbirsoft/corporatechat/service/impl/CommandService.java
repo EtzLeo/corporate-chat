@@ -124,7 +124,7 @@ public class CommandService {
     }
 
     private String executeRoomCommand(String command){
-        if (command.matches("^create \\w+ (\\d+,?)+ (-c)?")) {
+        if (command.matches("^create \\w+ (\\d+,?)*( -c)?")) {
             String[] params = command.split(" ");
             Set<Long> users = Arrays.stream(params[2].split(",")).map(Long::valueOf).collect(Collectors.toSet());
             RoomRequestDto dto = new RoomRequestDto(
@@ -144,7 +144,7 @@ public class CommandService {
                     .getRole()
                     .equals(Role.ROLE_ADMIN))
             {
-                return "Cannot rename room";
+                return "Cannot remove room";
             }
 
             roomService.deleteRoomById(roomService.findByName(params[1]).getId());

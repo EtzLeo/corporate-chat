@@ -31,10 +31,10 @@ public class Room {
     @ManyToMany(mappedBy = "rooms")
     private Set<User> users;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Message> messages;
 
-    @OneToMany(mappedBy = "room")
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserRoom> userRooms;
 
     public Room(Long id) {

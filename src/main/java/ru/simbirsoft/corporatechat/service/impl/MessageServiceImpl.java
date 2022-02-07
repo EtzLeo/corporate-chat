@@ -5,12 +5,15 @@ import org.springframework.stereotype.Service;
 import ru.simbirsoft.corporatechat.domain.Message;
 import ru.simbirsoft.corporatechat.domain.dto.MessageRequestDto;
 import ru.simbirsoft.corporatechat.domain.dto.MessageResponseDto;
+import ru.simbirsoft.corporatechat.exception.IllegalDataException;
 import ru.simbirsoft.corporatechat.exception.ResourceNotFoundException;
 import ru.simbirsoft.corporatechat.mapper.MessageMapper;
 import ru.simbirsoft.corporatechat.repository.MessageRepository;
 import ru.simbirsoft.corporatechat.service.MessageService;
+import ru.simbirsoft.corporatechat.util.AuthUtil;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -42,8 +45,25 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public MessageResponseDto createMessage(MessageRequestDto messageRequestDto) {
+        Long roomId =  AuthUtil.getCurrentUser().getRoomId();
+        Long userId = AuthUtil.getCurrentUser().getId();
+
+        if (messageRequestDto.getRoomId() != null &&
+                !Objects.equals(messageRequestDto.getRoomId(), roomId)) {
+            throw new IllegalDataException("Cannot send message to other room");
+        }
+        if (messageRequestDto.getAuthorId() != null &&
+                !Objects.equals(messageRequestDto.getAuthorId(), userId)) {
+            throw new IllegalDataException("Unable to send a message on behalf of another user");
+        }
+
+        messageRequestDto = new MessageRequestDto(userId, roomId, LocalDateTime.now(), messageRequestDto.getText());
+
         Message message = mapper.messageRequestDtoToMessage(messageRequestDto);
-        message.setDeliveringTime(LocalDateTime.now());
+        if (Objects.equals(message.getRoom().getName(), "bot-room")) {
+            throw new IllegalDataException("Unable to send a message to bot-room(only commands)");
+        }
+
         messageRepository.save(message);
         return mapper.messageToMessageResponseDto(message);
     }

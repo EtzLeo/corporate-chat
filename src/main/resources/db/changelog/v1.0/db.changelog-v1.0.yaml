@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: 01-changeset-chat-db.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: 10-changeset-fill-chat-db.yaml
+      relativeToChangelogFile: true

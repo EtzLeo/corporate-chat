@@ -138,6 +138,9 @@ public class UserRoomServiceImpl implements UserRoomService {
         Long roomId = id.getRoomId();
 
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new ResourceNotFoundException("Current room not found"));
+        if (Objects.equals(room.getName(), "bot-room")) {
+            throw new IllegalDataException("Cannot add user in bot-room");
+        }
 
         if (Objects.equals(userId, null)){
             throw new ResourceNotFoundException("User not found");
@@ -203,10 +206,20 @@ public class UserRoomServiceImpl implements UserRoomService {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found user in room"));
 
         if(Objects.equals(userRoom.getRoom().getOwner().getName(), userRoom.getUser().getName())) {
-            throw new AccessDeniedException("You can't expel owner of the room");
+            if (Objects.equals(AuthUtil.getCurrentUser().getId(), userRoom.getRoom().getOwner().getId())) {
+                roomRepository.delete(userRoom.getRoom());
+                return mapper.userRoomToUserRoomResponseDto(userRoom);
+            }
+            else {
+                throw new AccessDeniedException("You can't expel owner of the room");
+            }
         }
 
         if(userRoom.getRoom().getUsers().size() < 3) {
+            roomRepository.delete(userRoom.getRoom());
+            return mapper.userRoomToUserRoomResponseDto(userRoom);
+        }
+        if(userRoom.getRoom().getUsers().size() < 4) {
             userRoom.getRoom().setType(RoomType.PRIVATE);
         }
 

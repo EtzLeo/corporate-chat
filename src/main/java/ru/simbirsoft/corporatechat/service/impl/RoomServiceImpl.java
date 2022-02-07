@@ -2,10 +2,10 @@ package ru.simbirsoft.corporatechat.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.simbirsoft.corporatechat.domain.Room;
+import ru.simbirsoft.corporatechat.domain.User;
 import ru.simbirsoft.corporatechat.domain.UserRoomFK;
 import ru.simbirsoft.corporatechat.domain.dto.RoomRequestDto;
 import ru.simbirsoft.corporatechat.domain.dto.RoomResponseDto;
@@ -41,6 +41,10 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     @Override
     public RoomResponseDto findByName(String name) {
+        if (Objects.equals(name, "bot-room")) {
+            throw new IllegalDataException("Invalid name: bot-room");
+        }
+
         return roomRepository
                 .findByName(name)
                 .map(mapper::roomToRoomResponseDto)
@@ -62,6 +66,10 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     @Override
     public RoomResponseDto createRoom(RoomRequestDto roomRequestDto) {
+        if (Objects.equals(roomRequestDto.getName(), "bot-room")) {
+            throw new IllegalDataException("Cannot create bot-room");
+        }
+
         roomRequestDto.setOwnerId(AuthUtil.getCurrentUser().getId());
         Room room = mapper.roomRequestDtoToRoom(roomRequestDto);
         final int[] usersCount = {roomRequestDto.getUsers().size()};
@@ -109,6 +117,7 @@ public class RoomServiceImpl implements RoomService {
         if(!Objects.equals(AuthUtil.getCurrentUser().getUsername(),room.getOwner().getName())) {
             throw new AccessDeniedException("Only owner can delete room");
         }
+
         roomRepository.delete(room);
     }
 

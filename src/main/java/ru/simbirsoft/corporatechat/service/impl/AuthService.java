@@ -1,6 +1,7 @@
 package ru.simbirsoft.corporatechat.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import ru.simbirsoft.corporatechat.domain.UserRoomFK;
 import ru.simbirsoft.corporatechat.domain.dto.*;
 import ru.simbirsoft.corporatechat.domain.enums.Role;
 import ru.simbirsoft.corporatechat.domain.enums.RoomType;
+import ru.simbirsoft.corporatechat.exception.IllegalDataException;
 import ru.simbirsoft.corporatechat.exception.ResourceNotFoundException;
 import ru.simbirsoft.corporatechat.repository.UserRepository;
 import ru.simbirsoft.corporatechat.service.RoomService;
@@ -39,6 +41,10 @@ public class AuthService {
 
     @Transactional
     public Map<Object, Object> login(Long id, JwtUserDto dto) {
+        if (Objects.equals(dto.getName(), "BOT")) {
+            throw new IllegalDataException("Incorrect username");
+        }
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(dto.getName(), dto.getPassword())
         );

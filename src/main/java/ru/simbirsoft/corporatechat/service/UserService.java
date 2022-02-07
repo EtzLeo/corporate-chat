@@ -1,6 +1,5 @@
 package ru.simbirsoft.corporatechat.service;
 
-import ru.simbirsoft.corporatechat.domain.User;
 import ru.simbirsoft.corporatechat.domain.dto.UserRequestDto;
 import ru.simbirsoft.corporatechat.domain.dto.UserResponseDto;
 
